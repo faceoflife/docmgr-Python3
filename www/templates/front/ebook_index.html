@@ -1,0 +1,59 @@
+{% extends '/front/__base__.html' %}
+
+{% block title %}{{ ebook.title }}{% endblock %}
+
+{% block beforehead %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="uk-width-medium-3-4">
+	<div class="uk-margin-top">
+		<article class="uk-article">
+			<h1 class="uk-article-title">{{ ebook.title }}</h1>
+			{% if ebook.author %}
+			<p class="uk-article-meta">创建于 {{ ebook.created_at|todatetime }} By {{ ebook.author }}</p>
+			{% endif %}
+			<div> 
+				{{ ebook.content|safe }} 
+
+				{% if ebook.author %}
+				<h2 style="margin-left:40px">全书完整目录如下：</h2>
+				{% for p in ebook.p_items %}
+				<h3 style="margin-left:40px">{{ p.title }}</h3>
+				{% for item in p.index_items %}
+				<p style="margin-left:80px"><a href="/view/ebooks/{{ ebook.id }}/{{ item.id }}">{{ item.title }}</a></p>
+				{% endfor %}
+				{% endfor %}
+				{% endif %}
+			</div>
+		</article>
+		{% if ebook.source_link %}
+		<h4>阅读原文: <a href="{{ ebook.source_link }}" >《{{ ebook.title }}》</a></h4>
+		{% elif ebook.catalog_id %}
+		<h1 style="margin-left:0cm; text-align:center"><a href="/view/ebooks/{{ ebook.catalog_id }}/{{ ebook.catalog_id }}"><strong><span style="font-family:微软雅黑; font-size:18.0pt">返回电子书首页</span></strong></a></h1>
+		{% endif %}
+	</div>
+</div>
+
+<div class="uk-width-medium-1-4">
+	{% if ebook.cover_img %}
+	<div class="uk-panel uk-panel-box">
+		<div class="uk-text-center">
+			<img class="uk-border-rounded" width="120" height="120" src="{{ ebook.cover_img }}">
+			<h4><a href="{{ ebook.source_link }}">《{{ ebook.title }}》</a></h4>
+		</div>
+	</div>
+	{% endif %}
+	<div class="uk-panel uk-panel-header">
+		<h3 class="uk-panel-title">友情链接</h3>
+		<ul class="uk-list uk-list-line">
+			<li><i class="uk-icon-link"></i> <a href="#">编程</a></li>
+			<li><i class="uk-icon-link"></i> <a href="#">思考</a></li>
+			<li><i class="uk-icon-link"></i> <a href="#">读书</a></li>
+		</ul>
+	</div>
+</div>
+
+{% endblock %}

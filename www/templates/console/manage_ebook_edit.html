@@ -1,0 +1,134 @@
+{% extends '/console/__manage__.html' %}
+
+{% block title %}创建日志{% endblock %}
+
+{% block beforehead %}
+<!-- Codemirror 和 marked 依赖 -->
+<link rel="stylesheet" href="/static/js/codemirror/lib/codemirror.css">
+<script src="/static/js/codemirror/lib/codemirror.js"></script>
+<script src="/static/js/codemirror/mode/markdown/markdown.js"></script>
+<script src="/static/js/codemirror/addon/mode/overlay.js"></script>
+<script src="/static/js/codemirror/mode/xml/xml.js"></script>
+<script src="/static/js/codemirror/mode/gfm/gfm.js"></script>
+<script src="/static/js/marked.js"></script>
+
+<!-- HTML 编辑器的 CSS 与 JavaScript -->
+<link rel="stylesheet" href="/static/css/components/htmleditor.css">
+<script src="/static/js/components/htmleditor.js"></script>
+<script>
+    var ID = '{{ id }}', action = '{{ action }}', checked_tags = '{{ tags }}'; 
+    $(function () {
+        if(ID) {
+            $('#loading').hide();
+            getJSON('/api/blogs/' + ID, function (err, data) {
+                if(!err && data) {
+                    $('#loading').hide();
+                    initVM(data);
+                } else {
+                    return fatal(err);
+                }
+            });
+        } else {
+            $('#loading').hide();
+            initVM({
+                title: '',
+                is_index: 0,
+                content: '',
+                checked_tags: checked_tags
+            });
+        }
+    });
+
+    function initVM(data) {
+        vm = new Vue({
+            el: '#vm',
+            data: {
+                is_index: data.is_index == 1,
+                title: 'Title',
+                content: 'content...',
+                checked_tags: checked_tags
+            }, 
+            methods: {
+                submit: function(event) {
+                    event.preventDefault();
+                    var $form = $('#vm').find('form');
+                    $form.postJSON(action, this.$data, function (err, r) {
+                        if (err) {
+                            $form.showFormError(err);
+                        }
+                        else {
+                            return location.assign('/manage/blogs');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div id="error" class="uk-width-1-1"></div>
+
+<div id="loading" class="uk-width-1-1 uk-text-center">
+    <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> 正在加载...</span>
+</div>
+
+<div id="vm" class="uk-width-2-3">
+    <form v-on="submit: submit" class="uk-form uk-form-stacked">
+        <div class="uk-alert uk-alert-danger uk-hidden"></div>
+        <div class="uk-form-row">
+            <label class="uk-form-label">标题:</label>
+            <div class="uk-form-controls">
+                <input v-model="title" name="title" type="text" placeholder="标题" class="uk-width-1-1">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label">是否为首页:</label>
+            <input type="checkbox" id="is_index" v-model="is_index">
+            <label for="is_index" v-text="is_index"></label>
+        </div>
+        <div class="uk-form-row" v-if="is_index != 1">
+            <label class="uk-form-label">所属目录:</label>
+            <div class="uk-form-controls">
+                <select v-model="catalog_id">
+                    {% for catalog in catalogs %}
+                    <option value="{{ catalog.id }}" >{{ catalog.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="uk-form-row" v-if="is_index == 1">
+            <label class="uk-form-label">标签:</label>
+            <div class="uk-form-controls">
+                {% for tag in tags %}
+                <input type="checkbox" id="tag_{{ tag.id }}" value="{{ tag.id }}" v-model="checked_tags">
+                <label for="tag_{{ tag.id }}">
+                    <span class="uk-badge uk-badge-notification {{ tag.badge_type }}">{{ tag.name }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label">内容:</label>
+            <div class="uk-form-controls">
+                <textarea v-model="content" rows="16" name="content" placeholder="内容" class="uk-width-1-1" data-uk-htmleditor style="resize:none;"></textarea>
+            </div>
+        </div>
+        <div class="uk-form-row" v-if="is_index == 1">
+            <label class="uk-form-label">原文链接:</label>
+            <div class="uk-form-controls">
+                <input v-model="source_link" name="source_link" type="text" placeholder="原文链接" class="uk-width-1-1">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-save"></i> 保存</button>
+            <a href="/manage/ebooks" class="uk-button"><i class="uk-icon-times"></i> 取消</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

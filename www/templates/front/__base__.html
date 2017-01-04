@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--
+{% macro pagination(url, page) %}
+    <ul class="uk-pagination">
+        {% if page.has_previous %}
+            <li><a href="{{ url }}{{ page.page_index - 1 }}"><i class="uk-icon-angle-double-left"></i></a></li>
+        {% else %}
+            <li class="uk-disabled"><span><i class="uk-icon-angle-double-left"></i></span></li>
+        {% endif %}
+            <li class="uk-active"><span>{{ page.page_index }}</span></li>
+        {% if page.has_next %}
+            <li><a href="{{ url }}{{ page.page_index + 1 }}"><i class="uk-icon-angle-double-right"></i></a></li>
+        {% else %}
+            <li class="uk-disabled"><span><i class="uk-icon-angle-double-right"></i></span></li>
+        {% endif %}
+    </ul>
+{% endmacro %}
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" /> {% block meta %}
+    <!-- block meta  -->{% endblock %}
+    <title>{% block title %} ? {% endblock %} - Face of Life</title>
+    <link rel="stylesheet" href="/static/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/sha1.min.js"></script>
+    <script src="/static/js/uikit.min.js"></script>
+    <script src="/static/js/sticky.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/awesome.js"></script>
+    {% block beforehead %}
+    <!-- before head  -->
+    {% endblock %}
+    <style type="text/css">
+        html {
+            overflow-y: scroll;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body, h1, h2, h3, h4, h5, h6, .uk-subnav > li > a {
+            font-family: "Proxima Nova", "Helvetica Neue", Helvetica,"PingFang SC","Microsoft YaHei","微软雅黑", Arial, sans-serif;
+        }
+        .my-footer .uk-subnav-line > li:before { border-color: #ddd; }
+        .my-footer { background: #252525; margin: 0; padding: 50px 0;}
+        .my-footer, .my-footer a { color: #ddd !important; }
+        .my-footer a:hover { color: #fff !important; }
+    </style>
+</head>
+
+<body>
+    <div style="min-height: 100%;">
+        <nav class="uk-navbar uk-navbar-attached uk-margin-bottom">
+            <div class="uk-container uk-container-center">
+                <a href="/" class="uk-navbar-brand">Face of Life</a>
+                <ul class="uk-navbar-nav">
+                    <li data-url="blogs"><a href="/view/blogs"><i class="uk-icon-pencil"></i> 日志</a></li>
+                    <li data-url="ebooks"><a href="/view/ebooks"><i class="uk-icon-book"></i> 读书</a></li>
+                </ul>
+                <div class="uk-navbar-flip">
+                    <ul class="uk-navbar-nav">
+                        {% if __user__ %}
+                        <li class="uk-parent" data-uk-dropdown>
+                            <a href="#0"><i class="uk-icon-user"></i> {{ __user__.name }}</a>
+                            <div class="uk-dropdown uk-dropdown-navbar">
+                                <ul class="uk-nav uk-nav-navbar">
+                                    <li><a href="/signout"><i class="uk-icon-sign-out"></i> 登出</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li><a href="/view/signin"><i class="uk-icon-sign-in"></i> 登陆</a></li>
+                        <li><a href="/view/signup"><i class="uk-icon-edit"></i> 注册</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="uk-container uk-container-center">
+            <div class="uk-grid">
+                <!-- content -->
+                {% block content %} {% endblock %}
+                <!-- // content -->
+            </div>
+        </div>
+    </div>
+    <div class="my-footer uk-margin-large-top">
+        <div class="uk-text-center">
+            <ul class="uk-subnav uk-subnav-line uk-flex-center">
+                <li><a href="http://github.com/faceoflife">GitHub</a></li>
+                <li><a href="http://github.com/faceoflife/issues">Issues</a></li>
+                <li><a href="http://github.com/faceoflife/blob/master/CHANGELOG.md">Changelog</a></li>
+                <li><a href="https://twitter.com/getuikit">Twitter</a></li>
+            </ul>
+            <div class="uk-panel">
+                <p>
+                    Made by <a href="http://www.getuikit.net/">UIkit</a> with <a href="https://www.python.org/">Python3</a> And <a href="http://www.mysql.com/">MySQL5.6</a>.<br>
+                    <i class="uk-icon-copyright"></i>Copyright Faceoflife. Licensed under <a href="http://opensource.org/licenses/MIT">MIT license</a>.
+                </p>
+                <a href="/">
+                    <img src="/static/logo.jpg" width="30" height="30" title="UIkit" alt="UIkit">
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
