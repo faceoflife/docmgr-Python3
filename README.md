@@ -1,8 +1,6 @@
 # 从零开始用Python开发一个博客网站加电子书资料管理
 我是跟着廖雪峰的Python教程一步一步走下来的，没看过的可以学习下 <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000" target="_blank">Python3教程</a>
 
-![image](http://www.liaoxuefeng.com/files/attachments/00138676512923004999ceca5614eb2afc5c0efdd2e4640000/0)
-
 # 准备工作
 请确保你已经安装以下的库
 
