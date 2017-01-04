@@ -215,23 +215,21 @@ class Model(dict, metaclass = ModelMetaclass):
 	    # rs[0]表示一行数据,是一个字典，而rs是一个列表
 
 	@classmethod
-	@asyncio.coroutine
-	def find(cls, pk):
+	async def find(cls, pk):
 		# classmethod表示参数cls被绑定到类的类型对象(在这里即为<class '__main__.User'> )，
 		# 而不是实例对象
 		'find object by primary key.'
-		rs = yield from select('%s where `%s` = ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
+		rs = await select('%s where `%s` = ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
 		if len(rs) == 0:
 			return None
 		return cls(**rs[0])
 		# 1.将rs[0]转换成关键字参数元组，rs[0]为dict
 		# 2.通过<class '__main__.User'>(位置参数元组)，产生一个实例对象
 
-	@asyncio.coroutine
-	def save(self):
+	async def save(self):
 		args = list(map(self.getValueOrDefault, self.__fields__)) # args表示要插入的数据
 		args.append(self.getValueOrDefault(self.__primary_key__))
-		rows = yield from execute(self.__insert__, args)
+		rows = await execute(self.__insert__, args)
 		if rows != 1:
 			logger.info('failed to insert record: affected rows : %s' % rows)
 
